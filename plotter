@@ -1,0 +1,43 @@
+#!/usr/bin/gnuplot
+
+N = 7;
+array names=[ "LSseats", "covidcases", "coviddeaths", "gdp", \
+              "original", "popincrease", "population"]
+array titles=["Lok Sabha seats", "Confirmed COVID cases", "Covid deaths", \
+              "GDP", "Area", "Increase in population (2001-11)", "Population"]
+
+array cmap = ["#ca8282", "#caca82", "#82ca82", "#82caca", "#8282ca", "#ca82ca"]
+set for [i=1:6] linetype i lc rgb cmap[i]
+array colors=[1, 2, 3, 4, 6, 4, 1, 2, 3, 4, 5, 5, 1, 2, 3, \
+              4, 5, 6, 1, 6, 3, 6, 5, 6, 3, 2, 5, 4, 1, 2]
+
+set term svg  enhanced size 800, 900 
+set title font "Myriad Pro, 32"
+
+do for[i=1:N] {
+  file='data/processed/'.names[i].'.dat'
+  stats file u 1 nooutput
+  xmin=(i==1)?STATS_min:min(STATS_min,xmin)
+  xmax=(i==1)?STATS_max:max(STATS_max,xmax)
+  stats file u (-$2) nooutput
+  ymin=(i==1)?STATS_min:min(STATS_min,ymin)
+  ymax=(i==1)?STATS_max:max(STATS_max,ymax)
+}
+
+unset border
+unset tics
+set xrange[xmin:xmax]
+set yrange[ymin:ymax]
+set size ratio -1
+
+do for[i=1:N] {
+  print ' '.names[i].'.svg'
+  file='data/processed/'.names[i].'.dat'
+  image='images/'.names[i].'.svg'
+  pngimage='images/'.names[i].'.png'
+  set title '{/:Bold '.titles[i].'}'
+  set output image
+  plot file u 1:(-$2):(colors[$3]) w filledcurves closed lc var notitle, \
+       '' u 1:(-$2) w l lc 'black' lw 0.5 notitle
+  set output
+}
