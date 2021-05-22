@@ -25,9 +25,9 @@ You would need a modern C++ compiler.
 
 To modify a map you can then use
 ```
-echo map_input.dat data_input.dat num_rounds | ./weighted_distort > map_output.dat
+echo input.map data_input.dat num_rounds | ./weighted_distort > map_output.dat
 ```
-* `map_input.dat` is the input map with one region per line. Unfortunately, the program only works with regions that are **pseudo**-svg paths - that is, piecewise linear paths consisting of only "m, h, v, l, z" elements and commas between coordinates replaced by spaces. See [states_boundary.map](/data/states_boundary.map) for an example.
+* `input.map` is the input map with one region per line. Unfortunately, the program only works with regions that are **pseudo**-svg paths - that is, piecewise linear paths consisting of only "m, h, v, l, z" elements and commas between coordinates replaced by spaces. See [states_boundary.map](/data/states_boundary.map) for an example.
 * `data_input.dat` contains the data of the weight, one line per region. Regions with zero weight are ignored
 * `num_rounds` is the number of rounds to run the region relaxation for. I usually take around 10K rounds, and it stops earlier if every state is resized to 1% accuracy
 * `map_output.dat` is the output file which can be easily processed by gnuplot, with `x y region_id` per line and a blank line between two subregions
